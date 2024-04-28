@@ -4,13 +4,6 @@ import Card from "react-bootstrap/Card";
 import useApi from "../http";
 import { useState, useEffect } from "react";
 
-
-// const Courses = {
-//     course_id:number,
-//     course_name:string,
-//     course_image:string,
-//     course_descriotion:string,
-// }
 const Contact = () => {
   const [courses, setCourses] = useState();
   const api = useApi();
@@ -18,8 +11,8 @@ const Contact = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await api.get("/course.php");
-        setCourses(data);
+        const response = await api.get("/course.php");
+        setCourses(response.data);
       } catch (error) {
         console.error("Error fetching employees:", error);
       }
@@ -27,22 +20,23 @@ const Contact = () => {
     fetchData();
   }, []);
 
-
   return (
-    {courses.map((course,index)=>(
-<Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" />
-      <Card.Body>
-        <Card.Title></Card.Title>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">Go somewhere</Button>
-      </Card.Body>
-    </Card>
-    ))}
-    
+    <>
+      {courses && courses.length > 0 ? (
+        courses.map((course, index) => (
+          <Card key={index} style={{ width: "18rem" }}>
+            <Card.Img variant="top" src={course.course_image}></Card.Img>
+            <Card.Body>
+              <Card.Title>{course.course_name}</Card.Title>
+              <Card.Text>{course.course_description}</Card.Text>
+              <Button variant="primary">Go somewhere</Button>
+            </Card.Body>
+          </Card>
+        ))
+      ) : (
+        <p>No courses available</p>
+      )}
+    </>
   );
 };
 
